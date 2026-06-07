@@ -381,11 +381,12 @@ El uso de estas herramientas no reemplazó el proceso de análisis, implementaci
 
 ## Posibles Mejoras Futuras
 
-* Agregar una tabla histórica de lecturas de sensores.
-* Mostrar gráficas de comportamiento por sensor.
-* Implementar filtros avanzados por zona, tipo de sensor o estado.
-* Agregar Docker Compose para facilitar la ejecución del entorno completo.
-* Incorporar pruebas automatizadas para servicios y endpoints principales.
+- Agregar una tabla histórica de lecturas de sensores (`sensor_readings`) para almacenar valores en el tiempo.
+- Incorporar gráficas de comportamiento por sensor y zona, comparando lecturas históricas contra sus umbrales.
+- Explorar análisis de series temporales y detección de anomalías como base para mantenimiento predictivo.
+- Implementar filtros avanzados por zona, tipo de sensor, estado de monitoreo o condición de alerta.
+- Agregar Docker Compose para facilitar la ejecución del entorno completo.
+- Incorporar pruebas automatizadas para servicios y endpoints principales.
 
 ---
 
