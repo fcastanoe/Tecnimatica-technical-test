@@ -15,8 +15,8 @@ export function ZonesPage() {
     loadZones();
   }, []);
 
-  const loadZones = async () => {
-    setLoading(true);
+  const loadZones = async (silent = false) => {
+    if (!silent) setLoading(true);
     setError('');
     try {
       const zonesData = await getZones();
@@ -31,7 +31,7 @@ export function ZonesPage() {
     } catch {
       setError('Unable to load sensors. Please verify that the backend is running.');
     } finally {
-      setLoading(false);
+      if (!silent) setLoading(false);
     }
   };
 
@@ -45,6 +45,7 @@ export function ZonesPage() {
           zone={selectedZone}
           sensors={sensorsMap[selectedZone.id] ?? []}
           onBack={() => setSelectedZone(null)}
+          onUpdate={() => loadZones(true)}
         />
       ) : (
         <>
