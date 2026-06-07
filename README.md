@@ -333,7 +333,7 @@ La aplicación muestra las zonas de monitoreo de la planta, incluyendo:
 * Nombre de la zona.
 * Ubicación dentro de la planta.
 * Estado operacional.
-* Cantidad de sensores asignados.
+* Cantidad de sensores asignados (desglosados por estado: activos y pausados).
 
 ---
 
