@@ -643,22 +643,56 @@ body {
 }
 
 .zone-card__sensors {
-  font-size: 0.85rem;
-  color: var(--on-surface-variant);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
   margin-top: 0.75rem;
 }
 
-.zone-card__sensors strong {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 1.5rem;
-  color: var(--on-surface);
+.zone-card__sensors-label {
+  font-size: 0.72rem;
+  color: var(--on-surface-variant);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
   display: block;
-  font-weight: 500;
-  margin-top: 0.25rem;
-  text-transform: none;
-  letter-spacing: 0;
+  margin-bottom: 0.5rem;
+}
+
+.zone-card__sensors-breakdown {
+  display: flex;
+  gap: 1.25rem;
+  align-items: center;
+}
+
+.zone-card__stat {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+}
+
+.zone-card__stat-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  align-self: center;
+}
+
+.zone-card__stat-dot--active {
+  background-color: var(--success-color);
+  box-shadow: 0 0 6px var(--success-color);
+}
+
+.zone-card__stat-dot--paused {
+  background-color: var(--outline);
+}
+
+.zone-card__stat strong {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 1.35rem;
+  color: var(--on-surface);
+  font-weight: 600;
+}
+
+.zone-card__stat-label {
+  font-size: 0.8rem;
+  color: var(--on-surface-variant);
 }
 
 .zone-card__footer {
