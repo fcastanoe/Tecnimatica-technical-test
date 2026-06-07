@@ -124,10 +124,5 @@ En el frontend, esta mejora podría visualizarse mediante gráficas históricas 
 
 No implementé esta funcionalidad en la versión actual porque requiere datos históricos suficientes para entrenar, validar y evaluar modelos de forma responsable. Para el alcance de esta prueba prioricé el cumplimiento de los requisitos principales: modelado relacional, endpoints solicitados, asignación de sensores a zonas, actualización de monitoreos, visualización de estados y alerta por umbral superado.
 
----
 
-## Consideración adicional
 
-Como mejora técnica complementaria, el proyecto también podría contenerizarse con Docker y Docker Compose. Esto permitiría levantar PostgreSQL, backend y frontend desde un solo comando, facilitando la ejecución del sistema en otros entornos.
-
-No se incluyó Docker en esta versión porque no era un requisito explícito de la prueba y se priorizó entregar una solución sencilla, funcional, documentada y fácil de ejecutar localmente.
