@@ -487,3 +487,111 @@ body {
   font-size: 1.1rem;
   padding: 1rem;
 }
+
+/* New CSS utilities and styles for interactive elements */
+.text-capitalize {
+  text-transform: capitalize;
+}
+
+.text-right {
+  text-align: right;
+}
+
+.font-mono {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.edit-threshold-cell {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.input-edit {
+  width: 90px;
+  padding: 0.35rem 0.5rem;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 6px;
+  color: var(--text-primary);
+  font-family: inherit;
+  font-size: 0.95rem;
+  text-align: right;
+}
+
+.input-edit:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+}
+
+.btn--small {
+  padding: 0.35rem 0.75rem;
+  font-size: 0.85rem;
+  border-radius: 6px;
+}
+
+.btn--secondary {
+  background: var(--surface-hover);
+  color: var(--text-primary);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.btn--secondary:hover {
+  background: var(--neutral-color);
+}
+
+.btn--cancel {
+  background: rgba(239, 68, 68, 0.15);
+  color: #fca5a5;
+  border: 1px solid rgba(239, 68, 68, 0.25);
+}
+
+.btn--cancel:hover {
+  background: rgba(239, 68, 68, 0.25);
+}
+
+.btn--warning {
+  background: rgba(245, 158, 11, 0.15);
+  color: #fde047;
+  border: 1px solid rgba(245, 158, 11, 0.25);
+}
+
+.btn--warning:hover {
+  background: rgba(245, 158, 11, 0.25);
+}
+
+.btn--success {
+  background: rgba(16, 185, 129, 0.15);
+  color: #6ee7b7;
+  border: 1px solid rgba(16, 185, 129, 0.25);
+}
+
+.btn--success:hover {
+  background: rgba(16, 185, 129, 0.25);
+}
+
+.field-hint {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  margin-top: 0.25rem;
+  display: block;
+  font-style: italic;
+}
+
+.alert--warning {
+  background: rgba(245, 158, 11, 0.15);
+  color: #fde047;
+  border: 1px solid rgba(245, 158, 11, 0.25);
+}
+
+.zone-detail__alert {
+  margin-top: 1rem;
+  margin-bottom: 1.5rem;
+}
+
