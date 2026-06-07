@@ -1,19 +1,26 @@
+import { motion } from 'framer-motion';
 import type { Zone } from '../types';
 
 interface ZoneCardProps {
   zone: Zone;
   activeSensorsCount: number;
   onClick: () => void;
+  index?: number;
 }
 
-export function ZoneCard({ zone, activeSensorsCount, onClick }: ZoneCardProps) {
+export function ZoneCard({ zone, activeSensorsCount, onClick, index = 0 }: ZoneCardProps) {
   return (
-    <div 
-      className="zone-card" 
-      onClick={onClick} 
-      role="button" 
+    <motion.div
+      className="zone-card"
+      onClick={onClick}
+      role="button"
       tabIndex={0}
       onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') onClick(); }}
+      initial={{ opacity: 0, y: 24 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.35, delay: index * 0.07, ease: 'easeOut' }}
+      whileHover={{ scale: 1.025, transition: { duration: 0.18 } }}
+      whileTap={{ scale: 0.97 }}
     >
       <div className="zone-card__header">
         <div>
@@ -24,7 +31,7 @@ export function ZoneCard({ zone, activeSensorsCount, onClick }: ZoneCardProps) {
           </p>
         </div>
       </div>
-      
+
       <div className="zone-card__sensors">
         Sensores Asignados
         <strong>{activeSensorsCount}</strong>
@@ -35,6 +42,6 @@ export function ZoneCard({ zone, activeSensorsCount, onClick }: ZoneCardProps) {
           {zone.operational_status === 'operational' ? 'Operativo' : 'Inactivo'}
         </span>
       </div>
-    </div>
+    </motion.div>
   );
 }

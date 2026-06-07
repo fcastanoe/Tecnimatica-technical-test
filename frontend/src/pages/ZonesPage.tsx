@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
 import type { Zone, ZoneSensor } from '../types';
 import { getZones, getZoneSensors } from '../services/api';
 import { ZoneCard } from '../components/ZoneCard';
@@ -46,33 +47,49 @@ export function ZonesPage() {
 
   return (
     <div className="page">
-      {selectedZone ? (
-        <ZoneDetailPage
-          zone={selectedZone}
-          sensors={sensorsMap[selectedZone.id] ?? []}
-          onBack={() => setSelectedZone(null)}
-          onUpdate={() => loadZones(true)}
-          onZoneUpdate={handleZoneUpdate}
-        />
-      ) : (
-        <>
-          <div className="page__title-wrapper">
-            <h2 className="page__title">Monitoreo de Zonas</h2>
-            <p className="page__subtitle">Vista general operativa de sistemas críticos y telemetría de planta.</p>
-          </div>
-          <div className="zones-grid">
-            {zones.map(zone => (
-              <ZoneCard
-                key={zone.id}
-                zone={zone}
-                activeSensorsCount={(sensorsMap[zone.id] ?? []).length}
-                onClick={() => setSelectedZone(zone)}
-              />
-            ))}
-          </div>
-        </>
-      )}
+      <AnimatePresence mode="wait">
+        {selectedZone ? (
+          <motion.div
+            key="detail"
+            initial={{ opacity: 0, scale: 0.98 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.98 }}
+            transition={{ duration: 0.25, ease: 'easeOut' }}
+          >
+            <ZoneDetailPage
+              zone={selectedZone}
+              sensors={sensorsMap[selectedZone.id] ?? []}
+              onBack={() => setSelectedZone(null)}
+              onUpdate={() => loadZones(true)}
+              onZoneUpdate={handleZoneUpdate}
+            />
+          </motion.div>
+        ) : (
+          <motion.div
+            key="list"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+          >
+            <div className="page__title-wrapper">
+              <h2 className="page__title">Monitoreo de Zonas</h2>
+              <p className="page__subtitle">Vista general operativa de sistemas críticos y telemetría de planta.</p>
+            </div>
+            <div className="zones-grid">
+              {zones.map((zone, i) => (
+                <ZoneCard
+                  key={zone.id}
+                  zone={zone}
+                  index={i}
+                  activeSensorsCount={(sensorsMap[zone.id] ?? []).length}
+                  onClick={() => setSelectedZone(zone)}
+                />
+              ))}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
-
