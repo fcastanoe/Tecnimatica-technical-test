@@ -3,12 +3,13 @@ import type { Zone } from '../types';
 
 interface ZoneCardProps {
   zone: Zone;
-  activeSensorsCount: number;
+  activeCount: number;
+  pausedCount: number;
   onClick: () => void;
   index?: number;
 }
 
-export function ZoneCard({ zone, activeSensorsCount, onClick, index = 0 }: ZoneCardProps) {
+export function ZoneCard({ zone, activeCount, pausedCount, onClick, index = 0 }: ZoneCardProps) {
   return (
     <motion.div
       className="zone-card"
@@ -33,8 +34,19 @@ export function ZoneCard({ zone, activeSensorsCount, onClick, index = 0 }: ZoneC
       </div>
 
       <div className="zone-card__sensors">
-        Sensores Asignados
-        <strong>{activeSensorsCount}</strong>
+        <span className="zone-card__sensors-label">Sensores Asignados</span>
+        <div className="zone-card__sensors-breakdown">
+          <div className="zone-card__stat" title={`${activeCount} sensores activos`}>
+            <span className="zone-card__stat-dot zone-card__stat-dot--active"></span>
+            <strong>{activeCount}</strong>
+            <span className="zone-card__stat-label">Activos</span>
+          </div>
+          <div className="zone-card__stat" title={`${pausedCount} sensores en pausa`}>
+            <span className="zone-card__stat-dot zone-card__stat-dot--paused"></span>
+            <strong>{pausedCount}</strong>
+            <span className="zone-card__stat-label">Pausados</span>
+          </div>
+        </div>
       </div>
 
       <div className="zone-card__footer">

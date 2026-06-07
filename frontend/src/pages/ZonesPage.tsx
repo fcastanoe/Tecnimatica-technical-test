@@ -77,15 +77,22 @@ export function ZonesPage() {
               <p className="page__subtitle">Vista general operativa de sistemas críticos y telemetría de planta.</p>
             </div>
             <div className="zones-grid">
-              {zones.map((zone, i) => (
-                <ZoneCard
-                  key={zone.id}
-                  zone={zone}
-                  index={i}
-                  activeSensorsCount={(sensorsMap[zone.id] ?? []).length}
-                  onClick={() => setSelectedZone(zone)}
-                />
-              ))}
+              {zones.map((zone, i) => {
+                const zoneSensors = sensorsMap[zone.id] ?? [];
+                const activeCount = zoneSensors.filter(s => s.status === 'active').length;
+                const pausedCount = zoneSensors.filter(s => s.status === 'paused').length;
+                
+                return (
+                  <ZoneCard
+                    key={zone.id}
+                    zone={zone}
+                    index={i}
+                    activeCount={activeCount}
+                    pausedCount={pausedCount}
+                    onClick={() => setSelectedZone(zone)}
+                  />
+                );
+              })}
             </div>
           </motion.div>
         )}
