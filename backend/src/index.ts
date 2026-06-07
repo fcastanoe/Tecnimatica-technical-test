@@ -4,6 +4,9 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
+// Import connection to trigger test query
+import './config/database';
+
 const app = express();
 const PORT = process.env.PORT || 3000;
 
