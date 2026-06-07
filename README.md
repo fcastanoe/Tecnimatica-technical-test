@@ -358,6 +358,23 @@ Además, la base de datos incluye restricciones para reforzar la integridad de l
 
 ---
 
+## Uso de Herramientas Asistidas por IA
+
+Durante el desarrollo del proyecto se utilizaron herramientas asistidas por inteligencia artificial como apoyo complementario en el flujo de trabajo, principalmente mediante Antigravity y modelos como Claude y Gemini.
+
+Estas herramientas se emplearon para tareas de apoyo como:
+
+- Revisión de estructura del proyecto.
+- Validación de posibles errores en el código.
+- Verificación de consultas y decisiones relacionadas con SQL.
+- Revisión de redacción técnica en la documentación.
+- Organización de ideas para el README.md y DECISIONS.md.
+- Apoyo en pruebas manuales y revisión de coherencia entre frontend, backend y base de datos.
+
+El uso de estas herramientas no reemplazó el proceso de análisis, implementación, prueba y toma de decisiones del desarrollador. La solución final fue revisada, ajustada y validada manualmente, asegurando comprensión del modelo de datos, endpoints, reglas de negocio y funcionamiento general de la aplicación.
+
+---
+
 ## Posibles Mejoras Futuras
 
 * Agregar una tabla histórica de lecturas de sensores.
