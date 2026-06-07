@@ -40,12 +40,13 @@ export const getSensorsByZone = async (zoneId: number): Promise<any[]> => {
            m.reading_type, m.threshold_value, m.current_value, m.status, m.id as monitoring_id
     FROM monitorings m
     JOIN sensors s ON s.id = m.sensor_id
-    WHERE m.zone_id = $1 AND m.status = 'active'
+    WHERE m.zone_id = $1
     ORDER BY s.id;
   `;
   const result = await pool.query(query, [zoneId]);
   return result.rows;
 };
+
 
 export const getMonitoringById = async (id: number): Promise<Monitoring | null> => {
   const result = await pool.query('SELECT * FROM monitorings WHERE id = $1;', [id]);

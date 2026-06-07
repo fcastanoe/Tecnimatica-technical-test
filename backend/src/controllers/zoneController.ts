@@ -30,3 +30,28 @@ export const getZones = async (req: Request, res: Response, next: NextFunction):
     next(error);
   }
 };
+
+export const updateZone = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  try {
+    const zoneId = parseInt(req.params.id as string);
+    if (isNaN(zoneId)) {
+      throw new AppError('El ID de la zona debe ser un número válido', 400);
+    }
+
+    const zone = await zoneService.getZoneById(zoneId);
+    if (!zone) {
+      throw new AppError(`Zona con id ${zoneId} was not found`, 404);
+    }
+
+    const { operational_status } = req.body;
+    if (operational_status !== 'operational' && operational_status !== 'non-operational') {
+      throw new AppError("operational_status debe ser 'operational' o 'non-operational'", 400);
+    }
+
+    const updated = await zoneService.updateZoneStatus(zoneId, operational_status);
+    res.json(updated);
+  } catch (error) {
+    next(error);
+  }
+};
+
