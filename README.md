@@ -81,6 +81,8 @@ Antes de ejecutar el proyecto, asegúrate de tener instalado:
 * Un gestor de base de datos como **pgAdmin**, **DBeaver** o el cliente de consola `psql`.
 * Git, en caso de clonar el repositorio desde GitHub.
 
+> Nota: Los comandos principales están pensados para ejecutarse en Git Bash, Linux o macOS. En PowerShell o CMD algunos comandos de copia pueden variar; por eso se incluyen alternativas cuando aplica.
+
 ---
 
 ## Instalación y Ejecución
@@ -132,7 +134,25 @@ Instala las dependencias:
 npm install
 ```
 
-Crea un archivo `.env` en la raíz de la carpeta `backend`, tomando como base el archivo `.env.example`:
+Copia el archivo de ejemplo de variables de entorno:
+
+```bash
+cp .env.example .env
+```
+
+En PowerShell puedes usar:
+
+```powershell
+Copy-Item .env.example .env
+```
+
+En CMD puedes usar:
+
+```cmd
+copy .env.example .env
+```
+
+Luego abre el archivo `.env` y ajusta la contraseña de PostgreSQL según tu configuración local:
 
 ```env
 PORT=3000
@@ -148,6 +168,8 @@ Inicia el servidor de desarrollo:
 ```bash
 npm run dev
 ```
+
+> **Importante:** Deja esta terminal abierta. Si presionas `Ctrl + C`, el backend se detendrá y el frontend no podrá cargar datos desde la API.
 
 Si todo está configurado correctamente, deberías ver en consola mensajes similares a:
 
@@ -166,7 +188,9 @@ http://localhost:3000
 
 ### 4. Configurar e iniciar el frontend
 
-Abre una nueva terminal y entra a la carpeta del frontend:
+Abre una nueva terminal. El backend debe permanecer corriendo en la terminal anterior.
+
+Desde la raíz del proyecto, entra a la carpeta del frontend:
 
 ```bash
 cd frontend
@@ -189,6 +213,42 @@ Abre en el navegador la dirección indicada por la consola. Normalmente será:
 ```txt
 http://localhost:5173/
 ```
+
+> **Importante:** Para usar la aplicación en desarrollo, deben estar corriendo al mismo tiempo el backend y el frontend.
+
+---
+
+### 5. Ejecución en desarrollo con dos terminales
+
+Para ejecutar el proyecto localmente se recomienda usar dos terminales:
+
+**Terminal 1 — Backend**
+
+```bash
+cd backend
+npm run dev
+```
+
+**Terminal 2 — Frontend**
+
+```bash
+cd frontend
+npm run dev
+```
+
+El backend quedará disponible en:
+
+```txt
+http://localhost:3000
+```
+
+El frontend quedará disponible normalmente en:
+
+```txt
+http://localhost:5173/
+```
+
+> Si se detiene el backend, la interfaz podrá abrirse, pero no podrá cargar ni modificar datos.
 
 ---
 
