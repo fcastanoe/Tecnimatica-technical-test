@@ -12,7 +12,7 @@ export const getZoneSensors = async (req: Request, res: Response, next: NextFunc
 
     const zone = await zoneService.getZoneById(zoneId);
     if (!zone) {
-      throw new AppError(`Zona con id ${zoneId} was not found`, 404);
+      throw new AppError(`La zona con ID ${zoneId} no fue encontrada`, 404);
     }
 
     const sensors = await monitoringService.getSensorsByZone(zoneId);
@@ -40,7 +40,7 @@ export const updateZone = async (req: Request, res: Response, next: NextFunction
 
     const zone = await zoneService.getZoneById(zoneId);
     if (!zone) {
-      throw new AppError(`Zona con id ${zoneId} was not found`, 404);
+      throw new AppError(`La zona con ID ${zoneId} no fue encontrada`, 404);
     }
 
     const { operational_status } = req.body;

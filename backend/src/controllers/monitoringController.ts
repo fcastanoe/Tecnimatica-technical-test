@@ -36,13 +36,13 @@ export const createMonitoring = async (req: Request, res: Response, next: NextFu
     // 3. Validar existencia de Sensor
     const sensor = await sensorService.getSensorById(parsedSensorId);
     if (!sensor) {
-      throw new AppError(`Sensor with id ${parsedSensorId} was not found`, 404);
+      throw new AppError(`El sensor con ID ${parsedSensorId} no fue encontrado`, 404);
     }
 
     // 4. Validar existencia de Zona
     const zone = await zoneService.getZoneById(parsedZoneId);
     if (!zone) {
-      throw new AppError(`Zone with id ${parsedZoneId} was not found`, 404);
+      throw new AppError(`La zona con ID ${parsedZoneId} no fue encontrada`, 404);
     }
 
     // 5. Validar tipo de lectura
@@ -54,7 +54,7 @@ export const createMonitoring = async (req: Request, res: Response, next: NextFu
     // 6. Validar umbral
     const parsedThreshold = parseFloat(threshold_value);
     if (isNaN(parsedThreshold) || parsedThreshold <= 0) {
-      throw new AppError('threshold_value must be greater than 0', 400);
+      throw new AppError('El valor umbral debe ser mayor que 0', 400);
     }
 
     // 7. Validar estado
@@ -96,7 +96,7 @@ export const updateMonitoring = async (req: Request, res: Response, next: NextFu
     // Validar si el monitoreo existe
     const monitoring = await monitoringService.getMonitoringById(monitoringId);
     if (!monitoring) {
-      throw new AppError(`Monitoring with id ${monitoringId} was not found`, 404);
+      throw new AppError(`El monitoreo con ID ${monitoringId} no fue encontrado`, 404);
     }
 
     // Validar umbral si se envía
@@ -104,7 +104,7 @@ export const updateMonitoring = async (req: Request, res: Response, next: NextFu
     if (threshold_value !== undefined) {
       parsedThreshold = parseFloat(threshold_value);
       if (isNaN(parsedThreshold) || parsedThreshold <= 0) {
-        throw new AppError('threshold_value must be greater than 0', 400);
+        throw new AppError('El valor umbral debe ser mayor que 0', 400);
       }
     }
 
@@ -118,7 +118,7 @@ export const updateMonitoring = async (req: Request, res: Response, next: NextFu
     if (current_value !== undefined) {
       parsedCurrent = parseFloat(current_value);
       if (isNaN(parsedCurrent)) {
-        throw new AppError('current_value must be a valid number', 400);
+        throw new AppError('El valor actual debe ser un número válido', 400);
       }
     }
 
@@ -139,7 +139,7 @@ export const deleteMonitoring = async (req: Request, res: Response, next: NextFu
     // Validar si el monitoreo existe
     const monitoring = await monitoringService.getMonitoringById(monitoringId);
     if (!monitoring) {
-      throw new AppError(`Monitoring with id ${monitoringId} was not found`, 404);
+      throw new AppError(`El monitoreo con ID ${monitoringId} no fue encontrado`, 404);
     }
 
     await monitoringService.deleteMonitoring(monitoringId);

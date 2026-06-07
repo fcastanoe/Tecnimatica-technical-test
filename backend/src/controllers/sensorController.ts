@@ -21,7 +21,7 @@ export const getSensorZones = async (req: Request, res: Response, next: NextFunc
 
     const sensor = await sensorService.getSensorById(sensorId);
     if (!sensor) {
-      throw new AppError(`Sensor con id ${sensorId} was not found`, 404);
+      throw new AppError(`El sensor con ID ${sensorId} no fue encontrado`, 404);
     }
 
     const zones = await monitoringService.getZonesBySensor(sensorId);
