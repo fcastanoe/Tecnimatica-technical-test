@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { motion } from 'framer-motion';
 import type { Zone, ZoneSensor } from '../types';
 import { StatusBadge } from '../components/StatusBadge';
 import { ThresholdIndicator } from '../components/ThresholdIndicator';
@@ -114,7 +115,12 @@ export function ZoneDetailPage({ zone, sensors, onBack, onUpdate, onZoneUpdate }
   };
 
   return (
-    <div className="zone-detail">
+    <motion.div
+      className="zone-detail"
+      initial={{ opacity: 0, y: -16 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3, ease: 'easeOut' }}
+    >
       {/* Minimalist Back Button */}
       <button className="btn--back" onClick={onBack}>
         <span className="material-symbols-outlined">arrow_back</span>
@@ -138,13 +144,14 @@ export function ZoneDetailPage({ zone, sensors, onBack, onUpdate, onZoneUpdate }
             <span className="material-symbols-outlined" style={{ fontSize: '16px' }}>location_on</span>
             <span>{zone.location}</span>
           </div>
-          <button
+          <motion.button
             onClick={handleToggleZoneStatus}
             disabled={loadingZone}
             className={`btn ${zone.operational_status === 'operational' ? 'btn--warning' : 'btn--success'}`}
+            whileTap={{ scale: 0.94 }}
           >
             {loadingZone ? '...' : zone.operational_status === 'operational' ? 'Desactivar zona' : 'Activar zona'}
-          </button>
+          </motion.button>
         </div>
       </div>
 
@@ -187,14 +194,20 @@ export function ZoneDetailPage({ zone, sensors, onBack, onUpdate, onZoneUpdate }
                 <th>Acciones</th>
               </tr>
             </thead>
-            <tbody>
-              {sensors.map(s => {
+          <motion.tbody>
+              {sensors.map((s, rowIndex) => {
                 const isEditing = editingId === s.monitoring_id;
                 const isLoading = loadingId === s.monitoring_id;
                 const isExceeded = parseFloat(s.current_value) > parseFloat(s.threshold_value);
 
                 return (
-                  <tr key={s.monitoring_id} className={isExceeded && s.status === 'active' ? 'row--warning' : ''}>
+                  <motion.tr
+                    key={s.monitoring_id}
+                    className={isExceeded && s.status === 'active' ? 'row--warning' : ''}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.28, delay: rowIndex * 0.06, ease: 'easeOut' }}
+                  >
                     {/* Double-row cell for Sensor Name and Metadata */}
                     <td>
                       <div style={{ display: 'flex', flexDirection: 'column' }}>
@@ -288,13 +301,16 @@ export function ZoneDetailPage({ zone, sensors, onBack, onUpdate, onZoneUpdate }
                             >
                               Editar
                             </button>
-                            <button
+                            <motion.button
                               onClick={() => handleToggleStatus(s.monitoring_id, s.status)}
                               disabled={isLoading}
                               className={`btn btn--small ${s.status === 'active' ? 'btn--warning' : 'btn--success'}`}
+                              whileTap={{ scale: 0.88 }}
+                              whileHover={{ scale: 1.06 }}
+                              transition={{ duration: 0.15 }}
                             >
                               {s.status === 'active' ? 'Pausar' : 'Activar'}
-                            </button>
+                            </motion.button>
                             <button
                               onClick={() => handleDeleteMonitoring(s.monitoring_id)}
                               disabled={isLoading}
@@ -308,13 +324,13 @@ export function ZoneDetailPage({ zone, sensors, onBack, onUpdate, onZoneUpdate }
                         )}
                       </div>
                     </td>
-                  </tr>
+                  </motion.tr>
                 );
               })}
-            </tbody>
+            </motion.tbody>
           </table>
         </div>
       )}
-    </div>
+    </motion.div>
   );
 }
