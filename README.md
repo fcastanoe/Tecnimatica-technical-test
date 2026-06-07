@@ -15,7 +15,7 @@ Una planta industrial necesita rastrear qué sensores están asignados a qué zo
 La aplicación permite:
 
 * Consultar las zonas de monitoreo industrial.
-* Ver cuántos sensores activos tiene cada zona.
+* Ver cuántos sensores tiene asignados cada zona.
 * Consultar el detalle de una zona y sus sensores asignados.
 * Asignar sensores a zonas.
 * Configurar umbrales de alerta.
@@ -223,7 +223,7 @@ La aplicación muestra las zonas de monitoreo de la planta, incluyendo:
 * Nombre de la zona.
 * Ubicación dentro de la planta.
 * Estado operacional.
-* Cantidad de sensores activos.
+* Cantidad de sensores asignados.
 
 ---
 
@@ -315,7 +315,10 @@ La API valida:
 * Estados permitidos para monitoreos.
 * Tipos de lectura permitidos.
 * Prevención de asignaciones duplicadas para la misma combinación de sensor, zona y tipo de lectura.
-* Coherencia entre el tipo del sensor y el tipo de lectura asignado.
+
+Por su parte, el frontend valida y controla:
+
+* Coherencia entre el tipo del sensor y el tipo de lectura asignado (autocompletando y bloqueando el campo según el sensor seleccionado).
 
 Además, la base de datos incluye restricciones para reforzar la integridad de los datos desde PostgreSQL.
 
