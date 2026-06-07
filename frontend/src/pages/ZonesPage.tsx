@@ -56,7 +56,10 @@ export function ZonesPage() {
         />
       ) : (
         <>
-          <h2 className="page__title">Zonas de Monitoreo</h2>
+          <div className="page__title-wrapper">
+            <h2 className="page__title">Monitoreo de Zonas</h2>
+            <p className="page__subtitle">Vista general operativa de sistemas críticos y telemetría de planta.</p>
+          </div>
           <div className="zones-grid">
             {zones.map(zone => (
               <ZoneCard
