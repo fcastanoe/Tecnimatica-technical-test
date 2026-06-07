@@ -55,6 +55,7 @@ La aplicación permite:
 ├── frontend/
 │   ├── src/
 │   │   ├── components/
+│   │   ├── pages/
 │   │   ├── services/
 │   │   ├── types/
 │   │   ├── App.tsx
@@ -197,11 +198,11 @@ http://localhost:5173/
 | :-------- | :------------------- | :------------------------------------------------------------------------------------------- |
 | **GET**   | `/sensors`           | Obtiene la lista completa de sensores disponibles.                                           |
 | **GET**   | `/sensors/:id/zones` | Retorna las zonas monitoreadas por un sensor específico.                                     |
-| **GET**   | `/zones`             | Obtiene la lista completa de zonas con su estado operacional y cantidad de sensores activos. |
+| **GET**   | `/zones`             | Obtiene la lista completa de zonas con su estado operacional. |
 | **GET**   | `/zones/:id/sensors` | Lista los sensores asignados a una zona.                                                     |
 | **PATCH** | `/zones/:id`         | Cambia el estado operacional de una zona.                                                    |
 | **POST**  | `/monitorings`       | Crea una nueva asignación de sensor a zona.                                                  |
-| **PATCH** | `/monitorings/:id`   | Modifica el valor umbral, valor actual o estado de una asignación.                           |
+| **PATCH** | `/monitorings/:id`   | Modifica el valor umbral o estado de una asignación.                           |
 | **GET**   | `/monitorings`       | Retorna todos los monitoreos. Permite filtro opcional por estado.                            |
 
 Ejemplo de filtro por estado:

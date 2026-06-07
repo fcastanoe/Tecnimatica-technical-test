@@ -53,11 +53,10 @@ Además de la restricción única, se implementaron otras validaciones relevante
 * `reading_type` solo puede corresponder a tipos válidos: `temperature`, `pressure`, `vibration` o `flow`.
 * El sensor debe existir antes de crear un monitoreo.
 * La zona debe existir antes de crear un monitoreo.
-* El tipo de lectura debe ser coherente con el tipo del sensor seleccionado.
 
-La validación de coherencia entre el tipo del sensor y el tipo de lectura es especialmente importante desde el punto de vista del negocio. Por ejemplo, no tendría sentido que un sensor de temperatura sea asignado para medir flujo o vibración. Por eso, en el formulario del frontend el tipo de lectura se autocompleta a partir del sensor seleccionado y se restringe para evitar inconsistencias físicas.
+Adicionalmente, desde el frontend se controla la coherencia entre el tipo del sensor y el tipo de lectura, autocompletando y bloqueando el campo reading_type con base en el sensor seleccionado. Esto evita que desde la interfaz se creen combinaciones físicamente inconsistentes, como asignar un sensor de temperatura a una lectura de flujo o vibración.
 
-Estas validaciones se aplican tanto desde la lógica de la aplicación como desde la base de datos, buscando proteger la integridad de la información incluso si en el futuro se agregan nuevos clientes o interfaces.
+Estas validaciones buscan proteger la integridad de la información y mantener una experiencia de usuario coherente con el contexto industrial del sistema.
 
 ---
 
