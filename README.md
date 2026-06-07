@@ -194,16 +194,17 @@ http://localhost:5173/
 
 ## Endpoints del Backend
 
-| Método    | Ruta                 | Descripción                                                                                  |
-| :-------- | :------------------- | :------------------------------------------------------------------------------------------- |
-| **GET**   | `/sensors`           | Obtiene la lista completa de sensores disponibles.                                           |
-| **GET**   | `/sensors/:id/zones` | Retorna las zonas monitoreadas por un sensor específico.                                     |
-| **GET**   | `/zones`             | Obtiene la lista completa de zonas con su estado operacional. |
-| **GET**   | `/zones/:id/sensors` | Lista los sensores asignados a una zona.                                                     |
-| **PATCH** | `/zones/:id`         | Cambia el estado operacional de una zona.                                                    |
-| **POST**  | `/monitorings`       | Crea una nueva asignación de sensor a zona.                                                  |
-| **PATCH** | `/monitorings/:id`   | Modifica el valor umbral o estado de una asignación.                           |
-| **GET**   | `/monitorings`       | Retorna todos los monitoreos. Permite filtro opcional por estado.                            |
+| Método     | Ruta                  | Descripción                                                                                  |
+| :--------- | :-------------------- | :------------------------------------------------------------------------------------------- |
+| **GET**    | `/sensors`            | Obtiene la lista completa de sensores disponibles.                                           |
+| **GET**    | `/sensors/:id/zones`  | Retorna las zonas monitoreadas por un sensor específico.                                     |
+| **GET**    | `/zones`              | Obtiene la lista completa de zonas con su estado operacional.                                |
+| **GET**    | `/zones/:id/sensors`  | Lista los sensores asignados a una zona.                                                     |
+| **PATCH**  | `/zones/:id`          | Cambia el estado operacional de una zona.                                                    |
+| **POST**   | `/monitorings`        | Crea una nueva asignación de sensor a zona.                                                  |
+| **PATCH**  | `/monitorings/:id`    | Modifica el valor umbral, valor actual o estado de una asignación.                           |
+| **DELETE** | `/monitorings/:id`    | Elimina una asignación de sensor a zona.                                                     |
+| **GET**    | `/monitorings`        | Retorna todos los monitoreos. Permite filtro opcional por estado.                            |
 
 Ejemplo de filtro por estado:
 
@@ -338,6 +339,7 @@ Además, la base de datos incluye restricciones para reforzar la integridad de l
 | `GET /zones/:id/sensors`                                 | Cumplido |
 | `POST /monitorings`                                      | Cumplido |
 | `PATCH /monitorings/:id`                                 | Cumplido |
+| `DELETE /monitorings/:id`                                | Cumplido |
 | `GET /monitorings` con filtro opcional por estado        | Cumplido |
 | Tipos e interfaces separados en el backend               | Cumplido |
 | Manejo de errores HTTP 400, 404 y 500                    | Cumplido |
