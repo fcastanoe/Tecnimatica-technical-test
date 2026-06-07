@@ -100,18 +100,40 @@ cd Tecnimatica-technical-test
 
 Si tienes **Docker** y **Docker Compose** instalados, puedes ejecutar todo el sistema (Base de Datos PostgreSQL, Backend y Frontend Nginx) con un solo comando. La base de datos se inicializará y cargará los datos de prueba automáticamente en su primer inicio.
 
-### 2. Levantar los contenedores
+### 2. (Opcional) Personalizar variables de entorno para Docker
+
+Si deseas cambiar las credenciales de la base de datos o el puerto expuesto al host, puedes copiar el archivo de ejemplo en la raíz del proyecto:
+
+```bash
+cp .env.example .env
+```
+
+En PowerShell puedes usar:
+
+```powershell
+Copy-Item .env.example .env
+```
+
+En CMD puedes usar:
+
+```cmd
+copy .env.example .env
+```
+
+Abre el archivo `.env` recién creado y ajusta los valores (como `DB_PASSWORD` o `DB_PORT_OUT`). Si no creas este archivo, Docker usará automáticamente los valores por defecto (contraseña `postgrespassword` y puerto `5435`).
+
+### 3. Levantar los contenedores
 Ejecuta el siguiente comando en la raíz del proyecto:
 
 ```bash
 docker compose up --build
 ```
 
-### 3. Acceder a la aplicación
+### 4. Acceder a la aplicación
 Una vez levantado el entorno:
 * **Frontend (Nginx):** disponible en [http://localhost:5173/](http://localhost:5173/)
 * **Backend API:** disponible en [http://localhost:3000/](http://localhost:3000/)
-* **PostgreSQL:** accesible en `localhost:5435` con usuario `postgres` y contraseña `postgrespassword`.
+* **PostgreSQL:** accesible en `localhost:5435` (o el puerto configurado en `DB_PORT_OUT`) con el usuario y la contraseña definidos.
 
 Para detener la aplicación, presiona `Ctrl + C` en la terminal o ejecuta:
 

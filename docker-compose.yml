@@ -4,16 +4,16 @@ services:
     container_name: tecnimatica_db
     restart: always
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgrespassword
-      POSTGRES_DB: tecnimatica_monitoring
+      POSTGRES_USER: ${DB_USER:-postgres}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-postgrespassword}
+      POSTGRES_DB: ${DB_NAME:-tecnimatica_monitoring}
     ports:
-      - "5435:5432"
+      - "${DB_PORT_OUT:-5435}:5432"
     volumes:
       - ./database/schema.sql:/docker-entrypoint-initdb.d/schema.sql
       - tecnimatica_db_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres -d tecnimatica_monitoring"]
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-postgres} -d ${DB_NAME:-tecnimatica_monitoring}"]
       interval: 5s
       timeout: 5s
       retries: 5
@@ -28,9 +28,9 @@ services:
       PORT: 3000
       DB_HOST: db
       DB_PORT: 5432
-      DB_USER: postgres
-      DB_PASSWORD: postgrespassword
-      DB_NAME: tecnimatica_monitoring
+      DB_USER: ${DB_USER:-postgres}
+      DB_PASSWORD: ${DB_PASSWORD:-postgrespassword}
+      DB_NAME: ${DB_NAME:-tecnimatica_monitoring}
     depends_on:
       db:
         condition: service_healthy
