@@ -96,7 +96,34 @@ cd Tecnimatica-technical-test
 
 ---
 
-### 2. Configurar la base de datos
+## Opción A: Ejecución con Docker (Recomendado — Un solo comando) 🐳
+
+Si tienes **Docker** y **Docker Compose** instalados, puedes ejecutar todo el sistema (Base de Datos PostgreSQL, Backend y Frontend Nginx) con un solo comando. La base de datos se inicializará y cargará los datos de prueba automáticamente en su primer inicio.
+
+### 2. Levantar los contenedores
+Ejecuta el siguiente comando en la raíz del proyecto:
+
+```bash
+docker compose up --build
+```
+
+### 3. Acceder a la aplicación
+Una vez levantado el entorno:
+* **Frontend (Nginx):** disponible en [http://localhost:5173/](http://localhost:5173/)
+* **Backend API:** disponible en [http://localhost:3000/](http://localhost:3000/)
+* **PostgreSQL:** accesible en `localhost:5435` con usuario `postgres` y contraseña `postgrespassword`.
+
+Para detener la aplicación, presiona `Ctrl + C` en la terminal o ejecuta:
+
+```bash
+docker compose down
+```
+
+---
+
+## Opción B: Ejecución Local y Manual (Alternativa sin Docker) 🛠️
+
+### 2. Configurar la base de datos local
 
 Abre PostgreSQL desde pgAdmin, DBeaver o consola y crea una base de datos vacía llamada:
 
@@ -120,7 +147,7 @@ También inserta datos de prueba suficientes para validar el funcionamiento del 
 
 ---
 
-### 3. Configurar e iniciar el backend
+### 3. Configurar e iniciar el backend local
 
 Entra a la carpeta del backend:
 
@@ -186,7 +213,7 @@ http://localhost:3000
 
 ---
 
-### 4. Configurar e iniciar el frontend
+### 4. Configurar e iniciar el frontend local
 
 Abre una nueva terminal. El backend debe permanecer corriendo en la terminal anterior.
 
