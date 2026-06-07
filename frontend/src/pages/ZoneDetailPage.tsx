@@ -87,45 +87,73 @@ export function ZoneDetailPage({ zone, sensors, onBack, onUpdate, onZoneUpdate }
 
   return (
     <div className="zone-detail">
-      <button className="btn btn--back" onClick={onBack}>← Volver</button>
+      {/* Minimalist Back Button */}
+      <button className="btn--back" onClick={onBack}>
+        <span className="material-symbols-outlined">arrow_back</span>
+        <span>Volver al Control General</span>
+      </button>
 
-      <div className="zone-detail__header">
-        <h2>{zone.name}</h2>
-        <span className={`zone-card__status zone-card__status--${zone.operational_status}`}>
-          {zone.operational_status === 'operational' ? 'Operacional' : 'No operacional'}
-        </span>
-        <button
-          onClick={handleToggleZoneStatus}
-          disabled={loadingZone}
-          className={`btn btn--small ${zone.operational_status === 'operational' ? 'btn--warning' : 'btn--success'}`}
-        >
-          {loadingZone ? '...' : zone.operational_status === 'operational' ? 'Desactivar zona' : 'Activar zona'}
-        </button>
+      {/* Header Panel */}
+      <div className="zone-detail__header-panel">
+        <div className="zone-detail__title-section">
+          <div className="zone-detail__title-wrapper">
+            <span className="material-symbols-outlined zone-detail__title-icon">
+              {zone.name.toLowerCase().includes('caldera') ? 'local_fire_department' : 'settings_input_component'}
+            </span>
+            <h2 className="zone-detail__title">{zone.name}</h2>
+          </div>
+          {zone.description && <p className="zone-detail__description">{zone.description}</p>}
+        </div>
+
+        <div className="zone-detail__actions">
+          <div className="zone-detail__badge-location">
+            <span className="material-symbols-outlined" style={{ fontSize: '16px' }}>location_on</span>
+            <span>{zone.location}</span>
+          </div>
+          <button
+            onClick={handleToggleZoneStatus}
+            disabled={loadingZone}
+            className={`btn ${zone.operational_status === 'operational' ? 'btn--warning' : 'btn--success'}`}
+          >
+            {loadingZone ? '...' : zone.operational_status === 'operational' ? 'Desactivar zona' : 'Activar zona'}
+          </button>
+        </div>
       </div>
 
+      {/* Non-operational warning banner */}
       {zone.operational_status !== 'operational' && (
         <div className="alert alert--warning zone-detail__alert">
-          ⚠️ Esta zona no se encuentra operativa actualmente.
+          <span className="material-symbols-outlined">warning</span>
+          <span>Esta zona no se encuentra operativa actualmente. El monitoreo de sensores está restringido.</span>
         </div>
       )}
 
-      {zone.description && <p className="zone-detail__description">{zone.description}</p>}
-      <p className="zone-detail__location">📍 {zone.location}</p>
+      {error && (
+        <div className="alert alert--error" style={{ marginBottom: '1.5rem' }}>
+          <span className="material-symbols-outlined">error</span>
+          <span>{error}</span>
+        </div>
+      )}
 
-      {error && <div className="alert alert--error">{error}</div>}
-
-      <h3 className="zone-detail__sensors-title">Sensores asignados</h3>
+      {/* Data Table Section */}
       {sensors.length === 0 ? (
         <p className="state-message">No hay sensores registrados en esta zona.</p>
       ) : (
         <div className="sensors-table-wrapper">
+          <div className="sensors-table-header">
+            <h3>Sensores Asignados</h3>
+            <span className="sensors-table-header__badge">
+              {sensors.length} {sensors.length === 1 ? 'Sensor' : 'Sensores'}
+            </span>
+          </div>
+          
           <table className="sensors-table">
             <thead>
               <tr>
                 <th>Sensor</th>
-                <th>Tipo de lectura</th>
-                <th>Valor actual</th>
-                <th>Umbral</th>
+                <th>Tipo</th>
+                <th className="text-right">Valor actual</th>
+                <th className="text-right">Umbral</th>
                 <th>Estado</th>
                 <th>Alerta</th>
                 <th>Acciones</th>
@@ -139,11 +167,21 @@ export function ZoneDetailPage({ zone, sensors, onBack, onUpdate, onZoneUpdate }
 
                 return (
                   <tr key={s.monitoring_id} className={isExceeded && s.status === 'active' ? 'row--warning' : ''}>
-                    <td>{s.name}</td>
-                    <td className="text-capitalize">{s.reading_type}</td>
-                    <td className="text-right font-mono">
-                      {parseFloat(s.current_value).toFixed(2)} {getUnitForReadingType(s.reading_type)}
+                    {/* Double-row cell for Sensor Name and Metadata */}
+                    <td>
+                      <div style={{ display: 'flex', flexDirection: 'column' }}>
+                        <span className="sensor-cell-name">{s.name}</span>
+                        <span className="sensor-cell-sn">{s.manufacturer} • SN-{s.monitoring_id}20-T</span>
+                      </div>
                     </td>
+                    
+                    <td className="text-capitalize">{s.reading_type}</td>
+                    
+                    {/* Value cell highlighted in red if threshold is exceeded */}
+                    <td className={`text-right font-mono ${isExceeded && s.status === 'active' ? 'text-error' : 'text-primary'}`} style={{ fontWeight: '600' }}>
+                      {parseFloat(s.current_value).toFixed(2)} <span style={{ color: 'var(--on-surface-variant)', fontSize: '0.85em' }}>{getUnitForReadingType(s.reading_type)}</span>
+                    </td>
+                    
                     <td className="text-right font-mono">
                       {isEditing ? (
                         <div className="edit-threshold-cell">
@@ -159,13 +197,15 @@ export function ZoneDetailPage({ zone, sensors, onBack, onUpdate, onZoneUpdate }
                         </div>
                       ) : (
                         <span>
-                          {parseFloat(s.threshold_value).toFixed(2)} {getUnitForReadingType(s.reading_type)}
+                          {parseFloat(s.threshold_value).toFixed(2)} <span style={{ color: 'var(--outline)', fontSize: '0.85em' }}>{getUnitForReadingType(s.reading_type)}</span>
                         </span>
                       )}
                     </td>
+                    
                     <td>
                       <StatusBadge status={s.status} />
                     </td>
+                    
                     <td>
                       {s.status === 'active' ? (
                         <ThresholdIndicator
@@ -173,9 +213,10 @@ export function ZoneDetailPage({ zone, sensors, onBack, onUpdate, onZoneUpdate }
                           thresholdValue={parseFloat(s.threshold_value)}
                         />
                       ) : (
-                        <span className="threshold-indicator threshold-indicator--normal">—</span>
+                        <span className="threshold-indicator threshold-indicator--normal" style={{ opacity: 0.5 }}>—</span>
                       )}
                     </td>
+                    
                     <td>
                       <div className="action-buttons">
                         {isEditing ? (

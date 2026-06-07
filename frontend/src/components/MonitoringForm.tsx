@@ -72,6 +72,21 @@ export function MonitoringForm({ onSuccess }: MonitoringFormProps) {
     }
   };
 
+  const handleReset = () => {
+    setForm({
+      sensor_id: 0,
+      zone_id: 0,
+      installation_date: new Date().toISOString().split('T')[0],
+      reading_type: 'temperature',
+      threshold_value: 0,
+      current_value: 0,
+      status: 'active',
+    });
+    setZoneWarning('');
+    setSubmitError('');
+    setSuccess(false);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitError('');
@@ -82,7 +97,7 @@ export function MonitoringForm({ onSuccess }: MonitoringFormProps) {
       return;
     }
     if (form.threshold_value <= 0) {
-      setSubmitError('The threshold value must be greater than 0.');
+      setSubmitError('El valor umbral debe ser mayor que 0.');
       return;
     }
 
@@ -91,15 +106,9 @@ export function MonitoringForm({ onSuccess }: MonitoringFormProps) {
       await createMonitoring(form);
       setSuccess(true);
       onSuccess();
-      setForm(prev => ({
-        ...prev,
-        sensor_id: 0,
-        zone_id: 0,
-        threshold_value: 0,
-        current_value: 0,
-        status: 'active'
-      }));
-      setZoneWarning('');
+      handleReset();
+      // Keep success message visible
+      setSuccess(true);
     } catch (err: any) {
       setSubmitError(err.message || 'Unable to create monitoring assignment. Please check the form data.');
     } finally {
@@ -112,36 +121,75 @@ export function MonitoringForm({ onSuccess }: MonitoringFormProps) {
 
   return (
     <form className="monitoring-form" onSubmit={handleSubmit}>
-      <h2 className="monitoring-form__title">Asignar Sensor a Zona</h2>
+      <h2 className="monitoring-form__title">Asignar Nuevo Sensor</h2>
+      <p className="monitoring-form__subtitle">Configure un nuevo punto de monitoreo y establezca sus parámetros operativos.</p>
 
-      {fetchError && <p className="alert alert--error">{fetchError}</p>}
-      {submitError && <p className="alert alert--error">{submitError}</p>}
-      {zoneWarning && <p className="alert alert--warning">{zoneWarning}</p>}
-      {success && <p className="alert alert--success">✓ Monitoreo creado exitosamente</p>}
+      {fetchError && (
+        <div className="alert alert--error" style={{ marginBottom: '1.5rem' }}>
+          <span className="material-symbols-outlined">error</span>
+          <span>{fetchError}</span>
+        </div>
+      )}
+      
+      {submitError && (
+        <div className="alert alert--error" style={{ marginBottom: '1.5rem' }}>
+          <span className="material-symbols-outlined">error</span>
+          <span>{submitError}</span>
+        </div>
+      )}
+      
+      {zoneWarning && (
+        <div className="alert alert--warning" style={{ marginBottom: '1.5rem' }}>
+          <span className="material-symbols-outlined">warning</span>
+          <span>{zoneWarning}</span>
+        </div>
+      )}
+      
+      {success && (
+        <div className="alert alert--success" style={{ marginBottom: '1.5rem' }}>
+          <span className="material-symbols-outlined">check_circle</span>
+          <span>✓ Monitoreo creado exitosamente</span>
+        </div>
+      )}
 
       <div className="form-grid">
-        <label className="form-field">
-          <span>Sensor</span>
+        {/* Section 1: Identificación */}
+        <h3 className="form-section-title">1. Identificación del Dispositivo</h3>
+
+        <div className="form-field">
+          <span>
+            <span className="material-symbols-outlined">memory</span>
+            Selector de Sensor
+          </span>
           <select name="sensor_id" value={form.sensor_id} onChange={handleChange} required>
             <option value={0}>-- Seleccionar sensor --</option>
             {sensors.map(s => (
               <option key={s.id} value={s.id}>{s.name} ({s.type})</option>
             ))}
           </select>
-        </label>
+        </div>
 
-        <label className="form-field">
-          <span>Zona</span>
+        <div className="form-field">
+          <span>
+            <span className="material-symbols-outlined">map</span>
+            Selector de Zona
+          </span>
           <select name="zone_id" value={form.zone_id} onChange={handleChange} required>
             <option value={0}>-- Seleccionar zona --</option>
             {zones.map(z => (
               <option key={z.id} value={z.id}>{z.name} ({z.operational_status === 'operational' ? 'Operativa' : 'No operativa'})</option>
             ))}
           </select>
-        </label>
+        </div>
 
-        <label className="form-field">
-          <span>Tipo de lectura</span>
+        {/* Section 2: Configuración */}
+        <h3 className="form-section-title">2. Parámetros de Monitoreo</h3>
+
+        <div className="form-field">
+          <span>
+            <span className="material-symbols-outlined">analytics</span>
+            Tipo de lectura
+          </span>
           <select 
             name="reading_type" 
             value={form.reading_type} 
@@ -154,25 +202,37 @@ export function MonitoringForm({ onSuccess }: MonitoringFormProps) {
             ))}
           </select>
           {form.sensor_id > 0 && <span className="field-hint">Bloqueado según el tipo del sensor</span>}
-        </label>
+        </div>
 
-        <label className="form-field">
-          <span>Fecha de instalación</span>
+        <div className="form-field">
+          <span>
+            <span className="material-symbols-outlined">calendar_today</span>
+            Fecha de instalación
+          </span>
           <input type="date" name="installation_date" value={form.installation_date} onChange={handleChange} required />
-        </label>
+        </div>
 
-        <label className="form-field">
-          <span>Valor umbral</span>
+        <div className="form-field">
+          <span>
+            <span className="material-symbols-outlined">warning</span>
+            Valor umbral (Crítico)
+          </span>
           <input type="number" name="threshold_value" value={form.threshold_value || ''} onChange={handleChange} step="0.01" min="0.01" placeholder="Ej: 80.00" required />
-        </label>
+        </div>
 
-        <label className="form-field">
-          <span>Valor actual</span>
+        <div className="form-field">
+          <span>
+            <span className="material-symbols-outlined">track_changes</span>
+            Valor actual (Calibración)
+          </span>
           <input type="number" name="current_value" value={form.current_value || '0'} onChange={handleChange} step="0.01" placeholder="Ej: 75.00" required />
-        </label>
+        </div>
 
-        <label className="form-field">
-          <span>Estado</span>
+        <div className="form-field" style={{ gridColumn: '1 / -1' }}>
+          <span>
+            <span className="material-symbols-outlined">toggle_off</span>
+            Estado Inicial del Monitoreo
+          </span>
           <select 
             name="status" 
             value={form.status} 
@@ -184,12 +244,19 @@ export function MonitoringForm({ onSuccess }: MonitoringFormProps) {
             <option value="paused">Pausado</option>
           </select>
           {isZoneNonOperational && <span className="field-hint">Solo se admite "Pausado" en zonas inactivas</span>}
-        </label>
-      </div>
+        </div>
 
-      <button type="submit" className="btn btn--primary" disabled={loading}>
-        {loading ? 'Creando...' : 'Crear monitoreo'}
-      </button>
+        {/* Form Actions */}
+        <div className="form-actions">
+          <button className="btn btn--secondary" type="button" onClick={handleReset}>
+            Limpiar Campos
+          </button>
+          <button type="submit" className="btn btn--primary" disabled={loading}>
+            <span className="material-symbols-outlined">add_task</span>
+            {loading ? 'Creando...' : 'Crear monitoreo'}
+          </button>
+        </div>
+      </div>
     </form>
   );
 }
