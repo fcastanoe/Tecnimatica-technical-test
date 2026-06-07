@@ -90,7 +90,8 @@ export const createMonitoring = async (
 export const updateMonitoring = async (
   id: number,
   thresholdValue?: number,
-  status?: 'active' | 'paused'
+  status?: 'active' | 'paused',
+  currentValue?: number
 ): Promise<Monitoring | null> => {
   const fields: string[] = [];
   const values: any[] = [];
@@ -104,6 +105,11 @@ export const updateMonitoring = async (
   if (status !== undefined) {
     fields.push(`status = $${paramIdx++}`);
     values.push(status);
+  }
+
+  if (currentValue !== undefined) {
+    fields.push(`current_value = $${paramIdx++}`);
+    values.push(currentValue);
   }
 
   if (fields.length === 0) {
@@ -122,3 +128,8 @@ export const updateMonitoring = async (
   const result = await pool.query(query, values);
   return result.rows.length > 0 ? result.rows[0] : null;
 };
+
+export const deleteMonitoring = async (id: number): Promise<void> => {
+  await pool.query('DELETE FROM monitorings WHERE id = $1;', [id]);
+};
+

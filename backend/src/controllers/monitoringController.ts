@@ -91,7 +91,7 @@ export const updateMonitoring = async (req: Request, res: Response, next: NextFu
       throw new AppError('El ID del monitoreo debe ser un número válido', 400);
     }
 
-    const { threshold_value, status } = req.body;
+    const { threshold_value, status, current_value } = req.body;
 
     // Validar si el monitoreo existe
     const monitoring = await monitoringService.getMonitoringById(monitoringId);
@@ -113,9 +113,39 @@ export const updateMonitoring = async (req: Request, res: Response, next: NextFu
       throw new AppError("status debe ser 'active' o 'paused'", 400);
     }
 
-    const updated = await monitoringService.updateMonitoring(monitoringId, parsedThreshold, status);
+    // Validar valor actual si se envía
+    let parsedCurrent: number | undefined;
+    if (current_value !== undefined) {
+      parsedCurrent = parseFloat(current_value);
+      if (isNaN(parsedCurrent)) {
+        throw new AppError('current_value must be a valid number', 400);
+      }
+    }
+
+    const updated = await monitoringService.updateMonitoring(monitoringId, parsedThreshold, status, parsedCurrent);
     res.json(updated);
   } catch (error) {
     next(error);
   }
 };
+
+export const deleteMonitoring = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  try {
+    const monitoringId = parseInt(req.params.id as string);
+    if (isNaN(monitoringId)) {
+      throw new AppError('El ID del monitoreo debe ser un número válido', 400);
+    }
+
+    // Validar si el monitoreo existe
+    const monitoring = await monitoringService.getMonitoringById(monitoringId);
+    if (!monitoring) {
+      throw new AppError(`Monitoring with id ${monitoringId} was not found`, 404);
+    }
+
+    await monitoringService.deleteMonitoring(monitoringId);
+    res.json({ message: 'Monitoreo eliminado correctamente' });
+  } catch (error) {
+    next(error);
+  }
+};
+

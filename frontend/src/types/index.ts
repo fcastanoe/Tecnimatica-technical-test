@@ -56,4 +56,5 @@ export interface CreateMonitoringPayload {
 export interface UpdateMonitoringPayload {
   threshold_value?: number;
   status?: 'active' | 'paused';
+  current_value?: number;
 }

@@ -17,7 +17,10 @@ export function MonitoringForm({ onSuccess }: MonitoringFormProps) {
   const [success, setSuccess] = useState(false);
   const [zoneWarning, setZoneWarning] = useState('');
 
-  const [form, setForm] = useState<CreateMonitoringPayload>({
+  const [thresholdInput, setThresholdInput] = useState('');
+  const [currentInput, setCurrentInput] = useState('');
+
+  const [form, setForm] = useState<Omit<CreateMonitoringPayload, 'threshold_value' | 'current_value'> & { threshold_value: number; current_value: number }>({
     sensor_id: 0,
     zone_id: 0,
     installation_date: new Date().toISOString().split('T')[0],
@@ -82,6 +85,8 @@ export function MonitoringForm({ onSuccess }: MonitoringFormProps) {
       current_value: 0,
       status: 'active',
     });
+    setThresholdInput('');
+    setCurrentInput('');
     setZoneWarning('');
     setSubmitError('');
     setSuccess(false);
@@ -96,18 +101,20 @@ export function MonitoringForm({ onSuccess }: MonitoringFormProps) {
       setSubmitError('Debes seleccionar un sensor y una zona.');
       return;
     }
-    if (form.threshold_value <= 0) {
+
+    const parsedThreshold = parseFloat(thresholdInput);
+    const parsedCurrent = parseFloat(currentInput || '0');
+
+    if (isNaN(parsedThreshold) || parsedThreshold <= 0) {
       setSubmitError('El valor umbral debe ser mayor que 0.');
       return;
     }
 
     setLoading(true);
     try {
-      await createMonitoring(form);
-      setSuccess(true);
+      await createMonitoring({ ...form, threshold_value: parsedThreshold, current_value: parsedCurrent });
       onSuccess();
       handleReset();
-      // Keep success message visible
       setSuccess(true);
     } catch (err: any) {
       setSubmitError(err.message || 'Unable to create monitoring assignment. Please check the form data.');
@@ -217,7 +224,15 @@ export function MonitoringForm({ onSuccess }: MonitoringFormProps) {
             <span className="material-symbols-outlined">warning</span>
             Valor umbral (Crítico)
           </span>
-          <input type="number" name="threshold_value" value={form.threshold_value || ''} onChange={handleChange} step="0.01" min="0.01" placeholder="Ej: 80.00" required />
+          <input
+            type="number"
+            value={thresholdInput}
+            onChange={e => setThresholdInput(e.target.value)}
+            step="0.01"
+            min="0.01"
+            placeholder="Ej: 80.00"
+            required
+          />
         </div>
 
         <div className="form-field">
@@ -225,7 +240,14 @@ export function MonitoringForm({ onSuccess }: MonitoringFormProps) {
             <span className="material-symbols-outlined">track_changes</span>
             Valor actual (Calibración)
           </span>
-          <input type="number" name="current_value" value={form.current_value || '0'} onChange={handleChange} step="0.01" placeholder="Ej: 75.00" required />
+          <input
+            type="number"
+            value={currentInput}
+            onChange={e => setCurrentInput(e.target.value)}
+            step="0.01"
+            placeholder="Ej: 75.00"
+            required
+          />
         </div>
 
         <div className="form-field" style={{ gridColumn: '1 / -1' }}>

@@ -2,7 +2,7 @@ import { useState } from 'react';
 import type { Zone, ZoneSensor } from '../types';
 import { StatusBadge } from '../components/StatusBadge';
 import { ThresholdIndicator } from '../components/ThresholdIndicator';
-import { updateMonitoring, updateZone } from '../services/api';
+import { updateMonitoring, updateZone, deleteMonitoring } from '../services/api';
 
 interface ZoneDetailPageProps {
   zone: Zone;
@@ -24,36 +24,64 @@ const getUnitForReadingType = (type: string) => {
 
 export function ZoneDetailPage({ zone, sensors, onBack, onUpdate, onZoneUpdate }: ZoneDetailPageProps) {
   const [editingId, setEditingId] = useState<number | null>(null);
-  const [editVal, setEditVal] = useState<string>('');
+  const [editThreshold, setEditThreshold] = useState<string>('');
+  const [editCurrent, setEditCurrent] = useState<string>('');
   const [loadingId, setLoadingId] = useState<number | null>(null);
   const [loadingZone, setLoadingZone] = useState(false);
   const [error, setError] = useState<string>('');
 
-  const startEdit = (monitoringId: number, currentThreshold: string) => {
+  const startEdit = (monitoringId: number, currentThreshold: string, currentValue: string) => {
     setError('');
     setEditingId(monitoringId);
-    setEditVal(parseFloat(currentThreshold).toString());
+    setEditThreshold(parseFloat(currentThreshold).toString());
+    setEditCurrent(parseFloat(currentValue).toString());
   };
 
-  const handleSaveThreshold = async (monitoringId: number) => {
+  const handleSaveEdit = async (monitoringId: number) => {
     setError('');
-    const parsedVal = parseFloat(editVal);
-    if (isNaN(parsedVal) || parsedVal <= 0) {
+    const parsedThreshold = parseFloat(editThreshold);
+    const parsedCurrent = parseFloat(editCurrent);
+
+    if (isNaN(parsedThreshold) || parsedThreshold <= 0) {
       setError('El valor umbral debe ser mayor que 0.');
+      return;
+    }
+    if (isNaN(parsedCurrent)) {
+      setError('El valor actual debe ser un número válido.');
       return;
     }
 
     setLoadingId(monitoringId);
     try {
-      await updateMonitoring(monitoringId, { threshold_value: parsedVal });
+      await updateMonitoring(monitoringId, { 
+        threshold_value: parsedThreshold,
+        current_value: parsedCurrent
+      });
       setEditingId(null);
       onUpdate();
     } catch (err: any) {
-      setError(err.message || 'Error al actualizar el umbral.');
+      setError(err.message || 'Error al actualizar el monitoreo.');
     } finally {
       setLoadingId(null);
     }
   };
+
+  const handleDeleteMonitoring = async (monitoringId: number) => {
+    if (!confirm('¿Estás seguro de que deseas eliminar esta asignación de sensor?')) {
+      return;
+    }
+
+    setLoadingId(monitoringId);
+    try {
+      await deleteMonitoring(monitoringId);
+      onUpdate();
+    } catch (err: any) {
+      setError(err.message || 'Error al eliminar el monitoreo.');
+    } finally {
+      setLoadingId(null);
+    }
+  };
+
 
   const handleToggleStatus = async (monitoringId: number, currentStatus: 'active' | 'paused') => {
     setError('');
@@ -177,9 +205,23 @@ export function ZoneDetailPage({ zone, sensors, onBack, onUpdate, onZoneUpdate }
                     
                     <td className="text-capitalize">{s.reading_type}</td>
                     
-                    {/* Value cell highlighted in red if threshold is exceeded */}
+                    {/* Value cell highlighted in red if threshold is exceeded / Edit input if active */}
                     <td className={`text-right font-mono ${isExceeded && s.status === 'active' ? 'text-error' : 'text-primary'}`} style={{ fontWeight: '600' }}>
-                      {parseFloat(s.current_value).toFixed(2)} <span style={{ color: 'var(--on-surface-variant)', fontSize: '0.85em' }}>{getUnitForReadingType(s.reading_type)}</span>
+                      {isEditing ? (
+                        <input
+                          type="number"
+                          step="0.01"
+                          value={editCurrent}
+                          onChange={e => setEditCurrent(e.target.value)}
+                          disabled={isLoading}
+                          className="input-edit"
+                          style={{ width: '80px' }}
+                        />
+                      ) : (
+                        <>
+                          {parseFloat(s.current_value).toFixed(2)} <span style={{ color: 'var(--on-surface-variant)', fontSize: '0.85em' }}>{getUnitForReadingType(s.reading_type)}</span>
+                        </>
+                      )}
                     </td>
                     
                     <td className="text-right font-mono">
@@ -189,10 +231,11 @@ export function ZoneDetailPage({ zone, sensors, onBack, onUpdate, onZoneUpdate }
                             type="number"
                             step="0.01"
                             min="0.01"
-                            value={editVal}
-                            onChange={e => setEditVal(e.target.value)}
+                            value={editThreshold}
+                            onChange={e => setEditThreshold(e.target.value)}
                             disabled={isLoading}
                             className="input-edit"
+                            style={{ width: '80px' }}
                           />
                         </div>
                       ) : (
@@ -222,7 +265,7 @@ export function ZoneDetailPage({ zone, sensors, onBack, onUpdate, onZoneUpdate }
                         {isEditing ? (
                           <>
                             <button
-                              onClick={() => handleSaveThreshold(s.monitoring_id)}
+                              onClick={() => handleSaveEdit(s.monitoring_id)}
                               disabled={isLoading}
                               className="btn btn--small btn--primary"
                             >
@@ -239,7 +282,7 @@ export function ZoneDetailPage({ zone, sensors, onBack, onUpdate, onZoneUpdate }
                         ) : (
                           <>
                             <button
-                              onClick={() => startEdit(s.monitoring_id, s.threshold_value)}
+                              onClick={() => startEdit(s.monitoring_id, s.threshold_value, s.current_value)}
                               disabled={isLoading}
                               className="btn btn--small btn--secondary"
                             >
@@ -251,6 +294,15 @@ export function ZoneDetailPage({ zone, sensors, onBack, onUpdate, onZoneUpdate }
                               className={`btn btn--small ${s.status === 'active' ? 'btn--warning' : 'btn--success'}`}
                             >
                               {s.status === 'active' ? 'Pausar' : 'Activar'}
+                            </button>
+                            <button
+                              onClick={() => handleDeleteMonitoring(s.monitoring_id)}
+                              disabled={isLoading}
+                              className="btn btn--small btn--cancel"
+                              title="Eliminar asignación"
+                              style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '6px' }}
+                            >
+                              <span className="material-symbols-outlined" style={{ fontSize: '14px' }}>delete</span>
                             </button>
                           </>
                         )}

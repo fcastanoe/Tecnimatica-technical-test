@@ -54,3 +54,9 @@ export const updateZone = (id: number, operational_status: 'operational' | 'non-
     body: JSON.stringify({ operational_status }),
   });
 
+export const deleteMonitoring = (id: number): Promise<{ message: string }> =>
+  fetchJSON(`/monitorings/${id}`, {
+    method: 'DELETE',
+  });
+
+
