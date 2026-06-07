@@ -94,13 +94,11 @@ La arquitectura se mantuvo intencionalmente simple. No se incorporó un ORM ni u
 
 ## 4. Si tuvieras un día adicional para mejorar el proyecto, ¿qué funcionalidad o mejora técnica implementarías primero y por qué?
 
-Si contara con un día adicional, la primera mejora técnica y funcional que implementaría sería un **historial dinámico de lecturas de sensores**.
+Si contara con un día adicional, la primera mejora técnica que implementaría sería una base inicial para **monitoreo predictivo mediante análisis de series temporales y modelos de aprendizaje automático**, orientada a detectar comportamientos anómalos en las lecturas de los sensores.
 
-Actualmente, el campo `current_value` permite representar el estado actual de una lectura y comparar ese valor con el umbral configurado. Esto es suficiente para cumplir el alcance de la prueba y mostrar alertas visuales en el frontend.
+Actualmente, el campo `current_value` permite representar el estado actual de una lectura y compararlo contra el umbral configurado. Esta solución es suficiente para cumplir el alcance de la prueba, porque permite mostrar alertas visuales cuando una lectura supera el valor permitido. Sin embargo, en un entorno industrial real, una lectura aislada no siempre es suficiente para anticipar riesgos. Muchos problemas no aparecen únicamente cuando se supera un umbral, sino cuando existe una tendencia anormal en el tiempo, por ejemplo, una vibración que aumenta progresivamente, una presión que oscila de forma irregular o una temperatura que se eleva lentamente antes de una falla.
 
-Sin embargo, en un entorno industrial real, una sola lectura actual no es suficiente. Es necesario analizar el comportamiento de los sensores a lo largo del tiempo para identificar tendencias, patrones anormales o señales tempranas de falla.
-
-Por eso, agregaría una tabla llamada `sensor_readings` con una estructura similar a:
+Por esa razón, como primer paso agregaría una tabla histórica llamada `sensor_readings`, con una estructura similar a:
 
 ```sql
 CREATE TABLE sensor_readings (
@@ -111,19 +109,20 @@ CREATE TABLE sensor_readings (
 );
 ```
 
-Esta tabla permitiría guardar múltiples lecturas asociadas a un monitoreo específico.
+Esta tabla permitiría almacenar múltiples lecturas asociadas a cada monitoreo y construir una serie temporal por sensor, zona y tipo de lectura.
 
-Con esta mejora se podrían implementar funcionalidades como:
+A partir de ese histórico, implementaría inicialmente un módulo simple de análisis predictivo que pudiera evolucionar en dos niveles:
 
-* Historial de temperatura, presión, vibración o flujo.
-* Gráficas de comportamiento por sensor.
-* Comparación de lecturas contra el umbral en el tiempo.
-* Identificación de tendencias de riesgo.
-* Base inicial para mantenimiento predictivo.
+1. **Nivel inicial:** detección de anomalías mediante reglas estadísticas, como media móvil, desviación estándar, cambios bruscos y comparación contra umbrales dinámicos.
+2. **Nivel avanzado:** entrenamiento de modelos de Machine Learning o Deep Learning para identificar patrones anómalos y anticipar posibles fallas.
 
-En el frontend, esta mejora podría visualizarse mediante una gráfica en la vista de detalle de zona, mostrando la evolución de cada sensor respecto a su umbral.
+En una versión más avanzada, podrían evaluarse modelos como redes neuronales recurrentes, LSTM, GRU o modelos basados en ventanas temporales para predecir el comportamiento esperado de una variable industrial. Por ejemplo, el sistema podría aprender la evolución normal de la temperatura, presión, vibración o flujo en una zona determinada y generar una alerta no solo cuando se supere un umbral fijo, sino cuando la lectura se aleje significativamente del patrón esperado.
 
-No se implementó en esta versión para mantener el alcance controlado y priorizar los requerimientos principales de la prueba: modelado relacional, endpoints solicitados, asignación de sensores a zonas, actualización de monitoreos, visualización de estados y alerta por umbral superado.
+Esta mejora tendría valor porque permitiría pasar de un sistema reactivo a un sistema con capacidades predictivas. En lugar de limitarse a responder cuando un valor ya superó el umbral, el sistema podría apoyar procesos de mantenimiento predictivo, detección temprana de fallas y priorización de zonas críticas.
+
+En el frontend, esta mejora podría visualizarse mediante gráficas históricas por sensor, indicadores de tendencia y una alerta adicional de posible anomalía predictiva. De esta forma, el sistema no solo mostraría el estado actual del monitoreo, sino también la evolución del comportamiento del sensor en el tiempo.
+
+No implementé esta funcionalidad en la versión actual porque requiere datos históricos suficientes para entrenar, validar y evaluar modelos de forma responsable. Para el alcance de esta prueba prioricé el cumplimiento de los requisitos principales: modelado relacional, endpoints solicitados, asignación de sensores a zonas, actualización de monitoreos, visualización de estados y alerta por umbral superado.
 
 ---
 
