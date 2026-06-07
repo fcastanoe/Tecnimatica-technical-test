@@ -30,7 +30,7 @@ La aplicación permite:
 
 * **Base de Datos:** PostgreSQL
 * **Backend:** Node.js, Express, TypeScript, PG PostgreSQL Client
-* **Frontend:** React, Vite, TypeScript, Vanilla CSS
+* **Frontend:** React, Vite, TypeScript, Vanilla CSS, Framer Motion
 * **Control de Versiones:** Git y GitHub
 
 ---
@@ -359,6 +359,7 @@ Además, la base de datos incluye restricciones para reforzar la integridad de l
 * El backend utiliza consultas SQL parametrizadas para reducir el riesgo de inyección SQL.
 * La base de datos aplica restricciones `CHECK`, llaves foráneas y una restricción única compuesta.
 * El frontend consume la API REST y refleja los cambios realizados sobre los monitoreos.
+* Las animaciones de la interfaz utilizan Framer Motion y son progresivas: no afectan la lógica de negocio ni la comunicación con el backend.
 * Se priorizó una solución funcional, clara y fácil de ejecutar localmente.
 * No se incluyó Docker en esta versión porque no era un requisito explícito de la prueba. Como mejora futura, el proyecto podría contenerizarse con Docker Compose para levantar base de datos, backend y frontend desde un solo comando.
 
