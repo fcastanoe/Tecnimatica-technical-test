@@ -470,7 +470,7 @@ Además, la base de datos incluye restricciones para reforzar la integridad de l
 * El frontend consume la API REST y refleja los cambios realizados sobre los monitoreos.
 * Las animaciones de la interfaz utilizan Framer Motion y son progresivas: no afectan la lógica de negocio ni la comunicación con el backend.
 * Se priorizó una solución funcional, clara y fácil de ejecutar localmente.
-* No se incluyó Docker en esta versión porque no era un requisito explícito de la prueba. Como mejora futura, el proyecto podría contenerizarse con Docker Compose para levantar base de datos, backend y frontend desde un solo comando.
+* Se incluye soporte con Docker y Docker Compose como alternativa recomendada de ejecución, permitiendo levantar PostgreSQL, backend y frontend desde un solo comando.
 
 ---
 
