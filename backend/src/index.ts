@@ -33,4 +33,10 @@ app.use(errorHandler);
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
+  console.log(`================================================================`);
+  console.log(`🚀 Sistema de Monitoreo Industrial listo`);
+  console.log(`💻 Interfaz web (Frontend): http://localhost:5173`);
+  console.log(`🔌 Servidor API (Backend):   http://localhost:${PORT}`);
+  console.log(`================================================================`);
 });
+
