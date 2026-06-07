@@ -46,3 +46,11 @@ export const updateMonitoring = (id: number, payload: UpdateMonitoringPayload): 
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(payload),
   });
+
+export const updateZone = (id: number, operational_status: 'operational' | 'non-operational'): Promise<Zone> =>
+  fetchJSON(`/zones/${id}`, {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ operational_status }),
+  });
+

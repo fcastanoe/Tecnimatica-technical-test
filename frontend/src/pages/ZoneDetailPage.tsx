@@ -2,13 +2,14 @@ import { useState } from 'react';
 import type { Zone, ZoneSensor } from '../types';
 import { StatusBadge } from '../components/StatusBadge';
 import { ThresholdIndicator } from '../components/ThresholdIndicator';
-import { updateMonitoring } from '../services/api';
+import { updateMonitoring, updateZone } from '../services/api';
 
 interface ZoneDetailPageProps {
   zone: Zone;
   sensors: ZoneSensor[];
   onBack: () => void;
   onUpdate: () => void;
+  onZoneUpdate: (updatedZone: Zone) => void;
 }
 
 const getUnitForReadingType = (type: string) => {
@@ -21,10 +22,11 @@ const getUnitForReadingType = (type: string) => {
   }
 };
 
-export function ZoneDetailPage({ zone, sensors, onBack, onUpdate }: ZoneDetailPageProps) {
+export function ZoneDetailPage({ zone, sensors, onBack, onUpdate, onZoneUpdate }: ZoneDetailPageProps) {
   const [editingId, setEditingId] = useState<number | null>(null);
   const [editVal, setEditVal] = useState<string>('');
   const [loadingId, setLoadingId] = useState<number | null>(null);
+  const [loadingZone, setLoadingZone] = useState(false);
   const [error, setError] = useState<string>('');
 
   const startEdit = (monitoringId: number, currentThreshold: string) => {
@@ -56,7 +58,7 @@ export function ZoneDetailPage({ zone, sensors, onBack, onUpdate }: ZoneDetailPa
   const handleToggleStatus = async (monitoringId: number, currentStatus: 'active' | 'paused') => {
     setError('');
     const newStatus = currentStatus === 'active' ? 'paused' : 'active';
-    
+
     setLoadingId(monitoringId);
     try {
       await updateMonitoring(monitoringId, { status: newStatus });
@@ -68,15 +70,37 @@ export function ZoneDetailPage({ zone, sensors, onBack, onUpdate }: ZoneDetailPa
     }
   };
 
+  const handleToggleZoneStatus = async () => {
+    setError('');
+    const newStatus = zone.operational_status === 'operational' ? 'non-operational' : 'operational';
+
+    setLoadingZone(true);
+    try {
+      const updatedZone = await updateZone(zone.id, newStatus);
+      onZoneUpdate(updatedZone);
+    } catch (err: any) {
+      setError(err.message || 'Error al cambiar el estado de la zona.');
+    } finally {
+      setLoadingZone(false);
+    }
+  };
+
   return (
     <div className="zone-detail">
       <button className="btn btn--back" onClick={onBack}>← Volver</button>
-      
+
       <div className="zone-detail__header">
         <h2>{zone.name}</h2>
         <span className={`zone-card__status zone-card__status--${zone.operational_status}`}>
           {zone.operational_status === 'operational' ? 'Operacional' : 'No operacional'}
         </span>
+        <button
+          onClick={handleToggleZoneStatus}
+          disabled={loadingZone}
+          className={`btn btn--small ${zone.operational_status === 'operational' ? 'btn--warning' : 'btn--success'}`}
+        >
+          {loadingZone ? '...' : zone.operational_status === 'operational' ? 'Desactivar zona' : 'Activar zona'}
+        </button>
       </div>
 
       {zone.operational_status !== 'operational' && (
@@ -84,7 +108,7 @@ export function ZoneDetailPage({ zone, sensors, onBack, onUpdate }: ZoneDetailPa
           ⚠️ Esta zona no se encuentra operativa actualmente.
         </div>
       )}
-      
+
       {zone.description && <p className="zone-detail__description">{zone.description}</p>}
       <p className="zone-detail__location">📍 {zone.location}</p>
 
@@ -92,7 +116,7 @@ export function ZoneDetailPage({ zone, sensors, onBack, onUpdate }: ZoneDetailPa
 
       <h3 className="zone-detail__sensors-title">Sensores asignados</h3>
       {sensors.length === 0 ? (
-        <p className="state-message">No hay sensores activos en esta zona.</p>
+        <p className="state-message">No hay sensores registrados en esta zona.</p>
       ) : (
         <div className="sensors-table-wrapper">
           <table className="sensors-table">

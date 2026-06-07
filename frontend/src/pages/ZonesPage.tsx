@@ -21,7 +21,7 @@ export function ZonesPage() {
     try {
       const zonesData = await getZones();
       setZones(zonesData);
-      // Load active sensors for all zones in parallel
+      // Load sensors for all zones in parallel
       const results = await Promise.all(
         zonesData.map(z => getZoneSensors(z.id).catch(() => []))
       );
@@ -35,6 +35,12 @@ export function ZonesPage() {
     }
   };
 
+  // Updates selectedZone state immediately when its status changes
+  const handleZoneUpdate = (updatedZone: Zone) => {
+    setSelectedZone(updatedZone);
+    setZones(prev => prev.map(z => z.id === updatedZone.id ? updatedZone : z));
+  };
+
   if (loading) return <div className="state-message">Cargando zonas...</div>;
   if (error) return <div className="state-message state-message--error">{error}</div>;
 
@@ -46,6 +52,7 @@ export function ZonesPage() {
           sensors={sensorsMap[selectedZone.id] ?? []}
           onBack={() => setSelectedZone(null)}
           onUpdate={() => loadZones(true)}
+          onZoneUpdate={handleZoneUpdate}
         />
       ) : (
         <>
@@ -65,3 +72,4 @@ export function ZonesPage() {
     </div>
   );
 }
+
